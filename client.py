@@ -1,22 +1,20 @@
 import socket
 
-SERVER_HOST = 'SERVER IP: '
+SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 20000
-BUFFER_SIZE = 1024
-ENCODING = 'utf-8'
+BUFFER_SIZE = 4096
+OUTPUT_FILE = 'received_file.pdf'
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
     client_socket.connect((SERVER_HOST, SERVER_PORT))
 
-    while True:
-        message = input('Client: ')
-        client_socket.sendall(message.encode(ENCODING))
+    with open(OUTPUT_FILE, 'wb') as file:
+        while True:
+            chunk = client_socket.recv(BUFFER_SIZE)
 
-        data = client_socket.recv(BUFFER_SIZE)
+            if not chunk:
+                break
 
-        if not data:
-            print('Connection closed by server.')
-            break
+            file.write(chunk)
 
-        response = data.decode(ENCODING)
-        print(f'Server: {response}')
+print('File received successfully.')
