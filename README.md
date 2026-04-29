@@ -1,18 +1,21 @@
-# TCP Client-Server Communication
+# TCP File Transfer
 
-Basic TCP communication between a client and a server using Python sockets.
+Simple TCP-based file transfer between a client and a server using Python sockets.
 
 ## Overview
 
-This project implements a simple client-server architecture over TCP.  
-The client connects to the server and both sides can send and receive messages in real time.
+This project implements a basic client-server architecture over TCP that allows transferring files from a server to a client.
+
+The server reads a file in binary mode and sends it in chunks.  
+The client receives the data and reconstructs the file locally.
 
 ## Features
 
-- Establishes a TCP connection between client and server
-- Sends and receives text messages
-- Uses blocking sockets
-- Handles connection termination when one side closes the connection
+- TCP client-server communication
+- File transfer over TCP
+- Chunked transmission (4096 bytes)
+- Binary-safe file handling (rb / wb)
+- Simple and minimal implementation
 
 ## How to Run
 
@@ -22,35 +25,46 @@ The client connects to the server and both sides can send and receive messages i
 
 ### 2. Configure the client
 
-Open `client.py` and set `SERVER_HOST` to the server machine's IP address.
+Open `client.py` and set the server IP address:
 
-### 3. Run the client
+    SERVER_HOST = "127.0.0.1"  # or your server's IP
+
+### 3. Configure the file (server side)
+
+Open `server.py` and set the file to send:
+
+    FILE_PATH = "FILE.PDF"
+
+### 4. Run the client
 
     python client.py
 
-### 4. Communicate
-
-Type messages in either the client or the server terminal.
+The file will be received and saved locally.
 
 ## Technical Details
 
 - Uses socket.AF_INET and socket.SOCK_STREAM (TCP)
-- Messages are encoded using UTF-8
-- Data is received in fixed-size buffers (1024 bytes)
-- Connection is terminated when recv() returns empty data (b'')
+- File is read and sent in fixed-size chunks (4096 bytes)
+- Data is received using recv() and written directly to a file
+- End of transmission is detected when recv() returns empty data (b'')
 
 ## Limitations
 
 - Only supports a single client connection
-- No support for file transfer
-- No encryption (plain text communication)
-- No error handling for invalid inputs
+- No file metadata is sent (filename is hardcoded)
+- No progress tracking
+- No data integrity verification
+- No encryption (plain data transfer)
+
+## Versions
+
+- v1: basic TCP client-server communication  
+- v2: file transfer over TCP  
 
 ## Future Improvements
 
-- Implement file transfer over TCP
-- Add metadata (filename and file size)
-- Add progress tracking for file transfer
+- Send file metadata (filename and size)
+- Add progress tracking during transfer
 - Implement data integrity verification (SHA-256)
 - Support multiple clients
 - Add encrypted communication (TLS)
@@ -59,7 +73,8 @@ Type messages in either the client or the server terminal.
 
 This project helped me understand:
 
-- How TCP connections work
-- Client-server communication
-- Encoding and decoding data
-- Blocking I/O behavior in sockets
+- TCP socket communication
+- Client-server architecture
+- Binary file handling in Python
+- Chunk-based data transmission
+- How data flows over a TCP stream
